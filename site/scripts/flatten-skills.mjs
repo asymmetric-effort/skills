@@ -113,8 +113,10 @@ async function main() {
       subclass: subclass,
     });
     const outputContent = `---\n${newFrontmatter}\n---\n${body}`;
-    const outputFile = join(DIST_DIR, `${fields.name}.md`);
-    await writeFile(outputFile, outputContent);
+    // Claude Code expects: <skill-name>/SKILL.md
+    const skillOutDir = join(DIST_DIR, fields.name);
+    await mkdir(skillOutDir, { recursive: true });
+    await writeFile(join(skillOutDir, "SKILL.md"), outputContent);
 
     // Collect metadata for index
     index.push({
