@@ -8,6 +8,7 @@ Coding, debugging, refactoring, architecture, and language-specific patterns.
 |-----------------|-----------------------------------------------------|
 | `apis/`         | API design, REST, GraphQL, gRPC patterns            |
 | `architecture/` | System design, patterns, trade-off analysis         |
+| `code-review/`  | Pull request review, feedback, and approval workflows |
 | `databases/`    | Schema design, queries, migrations, optimization    |
 | `debugging/`    | Root cause analysis, logging, tracing               |
 | `gap-analysis/`  | Compare two projects for feature compatibility gaps |
