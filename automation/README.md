@@ -8,6 +8,7 @@ Workflow automation, scripting, scheduled tasks, and integrations.
 |----------------------|------------------------------------------------|
 | `file-management/`   | Bulk file operations, organization, cleanup    |
 | `integrations/`      | Third-party service and API integrations       |
+| `loop/`              | Recurring prompt execution within sessions     |
 | `notifications/`     | Alerts, emails, messaging hooks                |
 | `scheduling/`        | Cron jobs, timers, recurring tasks             |
 | `scripting/`         | Shell scripts, one-off automation              |
