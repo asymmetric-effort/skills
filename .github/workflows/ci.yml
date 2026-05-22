@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install site dependencies
+        run: cd site && npm ci
+      - name: Generate skill data
+        run: cd site && npm run generate-data
+      - name: Build site
+        run: cd site && npx vite build
+      - name: Copy 404.html for SPA routing
+        run: cp site/dist/index.html site/dist/404.html
+      - name: Run pre-deployment tests
+        run: |
+          cd site
+          npx playwright install --with-deps chromium
+          npx playwright test
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist/
+
+  deploy:
+    needs: build-site
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  pdv:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install PDV dependencies
+        run: cd site/e2e-pdv && npm ci
+      - name: Install Playwright browsers
+        run: cd site/e2e-pdv && npx playwright install --with-deps chromium
+      - name: Wait for CDN propagation
+        run: |
+          for i in $(seq 1 30); do
+            CONTENT=$(curl -sk "https://skills.asymmetric-effort.com/?_cb=$(date +%s%N)" | grep -oP 'assets/index-[^"]+\.js' || true)
+            if [ -n "$CONTENT" ]; then
+              echo "Site content confirmed after ${i}0s"
+              exit 0
+            fi
+            echo "Attempt $i/30..."; sleep 10
+          done
+          echo "WARNING: CDN may still be propagating"
+      - name: Run PDV tests
+        run: cd site/e2e-pdv && npx playwright test
+        env:
+          SITE_URL: https://skills.asymmetric-effort.com
+      - name: Upload test report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdv-report
+          path: site/e2e-pdv/test-results/

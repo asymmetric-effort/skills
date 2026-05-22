@@ -1,0 +1,709 @@
+/* ============================================================
+   Skills Documentation Site — Stylesheet
+   Asymmetric Effort coding standards
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   1. Custom Properties
+   ---------------------------------------------------------- */
+
+:root {
+  /* Light mode colors */
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f8fafc;
+  --color-bg-muted: #f1f5f9;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
+
+  /* Layout */
+  --radius: 8px;
+  --radius-lg: 12px;
+  --max-width: 1200px;
+  --nav-height: 56px;
+}
+
+[data-theme="dark"] {
+  --color-primary: #60a5fa;
+  --color-primary-dark: #3b82f6;
+  --color-bg: #0f172a;
+  --color-bg-subtle: #1e293b;
+  --color-bg-muted: #334155;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-border: #334155;
+}
+
+/* ----------------------------------------------------------
+   2. Reset & Base
+   ---------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* ----------------------------------------------------------
+   3. Typography
+   ---------------------------------------------------------- */
+
+h1 {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* ----------------------------------------------------------
+   4. Link Styles
+   ---------------------------------------------------------- */
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ----------------------------------------------------------
+   5. Nav Bar
+   ---------------------------------------------------------- */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background-color: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border);
+  z-index: 100;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 24px;
+}
+
+.nav-brand {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.nav-brand:hover {
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  margin-left: auto;
+  list-style: none;
+  padding: 0;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.nav-links a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+/* ----------------------------------------------------------
+   6. Dark Mode Toggle Button
+   ---------------------------------------------------------- */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: 4px;
+  margin-left: 16px;
+  transition: color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--color-text);
+}
+
+/* ----------------------------------------------------------
+   7. Main Content
+   ---------------------------------------------------------- */
+
+.main {
+  padding-top: calc(var(--nav-height) + 24px);
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 48px;
+}
+
+/* ----------------------------------------------------------
+   8. Hero Section
+   ---------------------------------------------------------- */
+
+.hero {
+  text-align: center;
+  padding: 64px 0 48px;
+}
+
+.hero h1 {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  color: var(--color-text-muted);
+  max-width: 600px;
+  margin: 16px auto 0;
+  font-size: 17px;
+}
+
+.hero-stats {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.hero-stat {
+  text-align: center;
+}
+
+.hero-stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.hero-stat-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ----------------------------------------------------------
+   9. Search / Filter Input
+   ---------------------------------------------------------- */
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text);
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.search-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* ----------------------------------------------------------
+   10. Cards Grid
+   ---------------------------------------------------------- */
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ----------------------------------------------------------
+   11. Card Content
+   ---------------------------------------------------------- */
+
+.card-title {
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-title a:hover {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.card-description {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ----------------------------------------------------------
+   12. Badge / Pill
+   ---------------------------------------------------------- */
+
+.badge {
+  display: inline-block;
+  background-color: var(--color-bg-muted);
+  color: var(--color-text-muted);
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* ----------------------------------------------------------
+   13. Class Icon Indicators (colored left-border per class)
+   ---------------------------------------------------------- */
+
+.card[data-class="core"] {
+  border-left: 3px solid #3b82f6;
+}
+
+.card[data-class="coding"] {
+  border-left: 3px solid #8b5cf6;
+}
+
+.card[data-class="devops"] {
+  border-left: 3px solid #10b981;
+}
+
+.card[data-class="research"] {
+  border-left: 3px solid #f59e0b;
+}
+
+.card[data-class="writing"] {
+  border-left: 3px solid #ec4899;
+}
+
+.card[data-class="data"] {
+  border-left: 3px solid #06b6d4;
+}
+
+.card[data-class="testing"] {
+  border-left: 3px solid #ef4444;
+}
+
+.card[data-class="security"] {
+  border-left: 3px solid #f97316;
+}
+
+.card[data-class="design"] {
+  border-left: 3px solid #a855f7;
+}
+
+.card[data-class="productivity"] {
+  border-left: 3px solid #14b8a6;
+}
+
+/* ----------------------------------------------------------
+   14. Breadcrumbs
+   ---------------------------------------------------------- */
+
+.breadcrumbs {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+.breadcrumbs a {
+  color: var(--color-primary);
+}
+
+.breadcrumbs .separator::before {
+  content: "/";
+}
+
+/* ----------------------------------------------------------
+   15. Skill Detail Page
+   ---------------------------------------------------------- */
+
+.skill-detail {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.skill-detail h1 {
+  margin-bottom: 16px;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.skill-section {
+  margin-bottom: 32px;
+}
+
+.skill-section h2 {
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ----------------------------------------------------------
+   16. Skill Content Rendering (.skill-content)
+   ---------------------------------------------------------- */
+
+.skill-content h2 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.skill-content h3 {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.skill-content p {
+  margin-bottom: 16px;
+}
+
+.skill-content ul,
+.skill-content ol {
+  margin-bottom: 16px;
+  padding-left: 24px;
+}
+
+.skill-content li {
+  margin-bottom: 6px;
+}
+
+.skill-content strong {
+  font-weight: 700;
+}
+
+.skill-content em {
+  font-style: italic;
+}
+
+.skill-content code {
+  font-family: 'SF Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 13px;
+  font-weight: 400;
+  background-color: var(--color-bg-muted);
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+}
+
+.skill-content pre {
+  background-color: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.skill-content pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.skill-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.skill-content th {
+  background-color: var(--color-bg-muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid var(--color-border);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.skill-content td {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border);
+  transition: border-color 0.15s ease;
+}
+
+/* ----------------------------------------------------------
+   17. Code Blocks (standalone)
+   ---------------------------------------------------------- */
+
+code {
+  font-family: 'SF Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+:not(pre) > code {
+  background-color: var(--color-bg-muted);
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+}
+
+pre {
+  background-color: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* ----------------------------------------------------------
+   18. Tables (standalone)
+   ---------------------------------------------------------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: var(--color-bg-muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid var(--color-border);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border);
+  transition: border-color 0.15s ease;
+}
+
+/* ----------------------------------------------------------
+   19. Footer
+   ---------------------------------------------------------- */
+
+.footer {
+  border-top: 1px solid var(--color-border);
+  padding: 24px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  margin-top: 48px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.footer a {
+  color: var(--color-primary);
+}
+
+/* ----------------------------------------------------------
+   20. Transitions (global)
+   ---------------------------------------------------------- */
+
+.nav,
+.nav-inner,
+.card,
+.search-input,
+.badge,
+.footer,
+.breadcrumbs,
+th,
+td,
+pre,
+code {
+  transition: background-color 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/* ----------------------------------------------------------
+   21. Responsive — Tablet (max-width: 768px)
+   ---------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 36px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-links {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .hero {
+    padding: 48px 0 32px;
+  }
+
+  .hero-stats {
+    gap: 24px;
+  }
+
+  .main {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 32px;
+  }
+
+  .skill-detail {
+    max-width: 100%;
+  }
+}
+
+/* ----------------------------------------------------------
+   22. Responsive — Mobile (max-width: 480px)
+   ---------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  h3 {
+    font-size: 16px;
+  }
+
+  body {
+    font-size: 14px;
+  }
+
+  .hero-subtitle {
+    font-size: 15px;
+  }
+
+  .hero-stat-value {
+    font-size: 24px;
+  }
+
+  .nav-inner {
+    padding: 0 16px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .skill-content pre {
+    padding: 12px;
+  }
+
+  th,
+  td {
+    padding: 8px;
+  }
+}

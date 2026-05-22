@@ -1,0 +1,9 @@
+{
+  "name": "@asymmetric-effort/skills-pdv",
+  "version": "0.0.17",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0"
+  }
+}

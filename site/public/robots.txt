@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://skills.asymmetric-effort.com/sitemap.xml
