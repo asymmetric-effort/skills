@@ -3,6 +3,7 @@ import { renderHome, attachHomeListeners } from './pages/home';
 import { renderClassView, attachClassViewListeners } from './pages/class-view';
 import { renderSkillView } from './pages/skill-view';
 import { renderNotFound } from './pages/not-found';
+import { renderGettingStarted } from './pages/getting-started';
 import { escapeHtml } from './util';
 
 declare const __APP_VERSION__: string;
@@ -26,7 +27,7 @@ function renderNav(currentPath: string): string {
   return `<nav class="nav-bar">
     <div class="nav-content">
       <a href="#/" class="nav-brand">Skills</a>
-      <div class="nav-links">${links}</div>
+      <div class="nav-links"><a href="#/getting-started" class="nav-link${currentPath === '/getting-started' ? ' active' : ''}">Getting Started</a>${links}</div>
       <button class="theme-toggle" id="theme-toggle" title="${isDark ? 'Switch to light mode' : 'Switch to dark mode'}" aria-label="${isDark ? 'Switch to light mode' : 'Switch to dark mode'}">${isDark ? '\u2600' : '\u263E'}</button>
     </div>
   </nav>`;
@@ -56,6 +57,8 @@ function render(): void {
   if (segments.length === 0) {
     content = renderHome(skillsData);
     afterRender = attachHomeListeners;
+  } else if (segments.length === 1 && segments[0] === 'getting-started') {
+    content = renderGettingStarted();
   } else if (segments.length === 1) {
     const className = segments[0];
     const classData = skillsData.classes.find((c: any) => c.name === className);

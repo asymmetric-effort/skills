@@ -30,6 +30,7 @@ export function renderHome(data: any): string {
     <section class="hero">
       <h1>Claude Code Skills</h1>
       <p class="hero-subtitle">A centralized library of reusable skills for development, security, testing, DevOps, and more.</p>
+      <p class="hero-cta"><a href="#/getting-started" class="cta-link">Get started &rarr; Add skills to your project in 60 seconds</a></p>
       <div class="hero-stats">
         <div class="stat">
           <span class="stat-value">${totalSkills}</span>

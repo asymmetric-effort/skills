@@ -214,6 +214,27 @@ a:hover {
   font-size: 17px;
 }
 
+.hero-cta {
+  margin-top: 20px;
+}
+
+.cta-link {
+  display: inline-block;
+  padding: 10px 24px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.cta-link:hover {
+  background: var(--color-primary-dark);
+  text-decoration: none;
+}
+
 .hero-stats {
   display: flex;
   flex-direction: row;
