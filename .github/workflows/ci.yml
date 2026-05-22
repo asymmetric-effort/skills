@@ -53,6 +53,48 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
 
+  publish-skills:
+    needs: build-site
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Flatten skills
+        run: node site/scripts/flatten-skills.mjs
+      - name: Get version
+        id: version
+        run: echo "VERSION=$(cat dist/VERSION)" >> "$GITHUB_OUTPUT"
+      - name: Publish to release branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          # Create an orphan branch or switch to existing release branch
+          git checkout --orphan release-temp
+          # Remove everything
+          git rm -rf . || true
+          # Copy dist contents to root
+          cp -r dist/* .
+          rm -rf dist/
+          # Add all files
+          git add -A
+          git commit -m "release: publish skills v${VERSION}"
+          # Force-update the release branch
+          git branch -M release-temp release
+          git push origin release --force
+      - name: Tag release
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          git tag -a "v${VERSION}" -m "v${VERSION}" || true
+          git push origin --tags || true
+
   pdv:
     needs: deploy
     runs-on: ubuntu-latest

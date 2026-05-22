@@ -4,3 +4,4 @@ src/data/skills-data.json
 e2e-pdv/node_modules/
 test-results/
 playwright-report/
+dist/

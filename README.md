@@ -1,6 +1,17 @@
-# Skills
+<p align="center">
+  <img src="logo.png" alt="Skills" width="128" height="128" />
+</p>
 
-A centralized, versioned library of reusable [Claude Code](https://claude.ai/claude-code) skills for the Asymmetric Effort organization.
+<h1 align="center">Skills</h1>
+
+<p align="center">
+  A centralized, versioned library of reusable <a href="https://claude.ai/claude-code">Claude Code</a> skills for the Asymmetric Effort organization.
+</p>
+
+<p align="center">
+  <a href="https://skills.asymmetric-effort.com">Documentation</a> ·
+  <a href="https://github.com/asymmetric-effort/skills/issues">Issues</a>
+</p>
 
 ## What Are Skills?
 
