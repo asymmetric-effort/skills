@@ -72,29 +72,150 @@ jobs:
       - name: Get version
         id: version
         run: echo "VERSION=$(cat dist/VERSION)" >> "$GITHUB_OUTPUT"
+      - name: Create tarball
+        run: |
+          cd dist
+          tar czf ../skills.tar.gz .
+          cd ..
+          echo "Tarball size: $(du -h skills.tar.gz | cut -f1)"
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="v${{ steps.version.outputs.VERSION }}"
+          # Delete existing release for this version if it exists
+          gh release delete "$VERSION" --yes 2>/dev/null || true
+          # Create new release with tarball
+          gh release create "$VERSION" \
+            --title "Skills $VERSION" \
+            --notes "Published skills $VERSION with $(find dist -name SKILL.md | wc -l) skills." \
+            --latest \
+            skills.tar.gz
       - name: Publish to release branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           VERSION="${{ steps.version.outputs.VERSION }}"
-          # Create an orphan branch or switch to existing release branch
           git checkout --orphan release-temp
-          # Remove everything
           git rm -rf . || true
-          # Copy dist contents to root
           cp -r dist/* .
           rm -rf dist/
-          # Add all files
           git add -A
           git commit -m "release: publish skills v${VERSION}"
-          # Force-update the release branch
           git branch -M release-temp release
           git push origin release --force
-      - name: Tag release
+
+  test-install:
+    needs: publish-skills
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get version
+        id: version
+        run: echo "VERSION=$(cat site/public/VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Test install.sh with explicit version
         run: |
-          VERSION="${{ steps.version.outputs.VERSION }}"
-          git tag -a "v${VERSION}" -m "v${VERSION}" || true
-          git push origin --tags || true
+          echo "=== Test 1: Install with explicit version ==="
+          mkdir -p /tmp/test-project-1
+          cd /tmp/test-project-1
+          sh ${{ github.workspace }}/install.sh "v${{ steps.version.outputs.VERSION }}"
+
+      - name: Verify directory structure
+        run: |
+          echo "=== Test 2: Verify directory structure ==="
+          cd /tmp/test-project-1
+          # Must have .claude/skills/ directory
+          test -d .claude/skills || (echo "FAIL: .claude/skills/ not found" && exit 1)
+          echo "PASS: .claude/skills/ exists"
+
+          # Must have VERSION file
+          test -f .claude/skills/VERSION || (echo "FAIL: VERSION file not found" && exit 1)
+          echo "PASS: VERSION file exists"
+
+          # Must have skills.json index
+          test -f .claude/skills/skills.json || (echo "FAIL: skills.json not found" && exit 1)
+          echo "PASS: skills.json exists"
+
+      - name: Verify skill directory format
+        run: |
+          echo "=== Test 3: Verify <name>/SKILL.md format ==="
+          cd /tmp/test-project-1
+
+          # Each skill must be a directory containing SKILL.md
+          for skill in push-changes commit review-pr pentest audit-deps; do
+            test -d ".claude/skills/${skill}" || (echo "FAIL: ${skill}/ directory not found" && exit 1)
+            test -f ".claude/skills/${skill}/SKILL.md" || (echo "FAIL: ${skill}/SKILL.md not found" && exit 1)
+            echo "PASS: ${skill}/SKILL.md exists"
+          done
+
+      - name: Verify skill count
+        run: |
+          echo "=== Test 4: Verify skill count ==="
+          cd /tmp/test-project-1
+          SKILL_COUNT=$(find .claude/skills -name "SKILL.md" -type f | wc -l)
+          echo "Found ${SKILL_COUNT} skills"
+          test "$SKILL_COUNT" -ge 20 || (echo "FAIL: Expected at least 20 skills, got ${SKILL_COUNT}" && exit 1)
+          echo "PASS: ${SKILL_COUNT} skills installed"
+
+      - name: Verify SKILL.md frontmatter
+        run: |
+          echo "=== Test 5: Verify SKILL.md frontmatter ==="
+          cd /tmp/test-project-1
+
+          # Each SKILL.md must have name, description, source_path fields
+          for skill in push-changes pentest commit; do
+            FILE=".claude/skills/${skill}/SKILL.md"
+            grep -q "^name:" "$FILE" || (echo "FAIL: ${skill} missing name field" && exit 1)
+            grep -q "^description:" "$FILE" || (echo "FAIL: ${skill} missing description field" && exit 1)
+            grep -q "^source_path:" "$FILE" || (echo "FAIL: ${skill} missing source_path field" && exit 1)
+            echo "PASS: ${skill} frontmatter valid"
+          done
+
+      - name: Verify VERSION matches
+        run: |
+          echo "=== Test 6: Verify VERSION matches ==="
+          cd /tmp/test-project-1
+          INSTALLED=$(cat .claude/skills/VERSION)
+          EXPECTED="${{ steps.version.outputs.VERSION }}"
+          test "$INSTALLED" = "$EXPECTED" || (echo "FAIL: VERSION mismatch: got ${INSTALLED}, expected ${EXPECTED}" && exit 1)
+          echo "PASS: VERSION is ${INSTALLED}"
+
+      - name: Test install.sh with latest
+        run: |
+          echo "=== Test 7: Install with 'latest' ==="
+          mkdir -p /tmp/test-project-2
+          cd /tmp/test-project-2
+          sh ${{ github.workspace }}/install.sh latest
+          SKILL_COUNT=$(find .claude/skills -name "SKILL.md" -type f | wc -l)
+          test "$SKILL_COUNT" -ge 20 || (echo "FAIL: Expected at least 20 skills" && exit 1)
+          echo "PASS: latest installed ${SKILL_COUNT} skills"
+
+      - name: Test reinstall overwrites cleanly
+        run: |
+          echo "=== Test 8: Reinstall overwrites cleanly ==="
+          cd /tmp/test-project-2
+          # Add a rogue file
+          echo "rogue" > .claude/skills/rogue.txt
+          # Reinstall
+          sh ${{ github.workspace }}/install.sh "v${{ steps.version.outputs.VERSION }}"
+          # Rogue file should be gone
+          test ! -f .claude/skills/rogue.txt || (echo "FAIL: rogue.txt still exists after reinstall" && exit 1)
+          echo "PASS: clean reinstall"
+
+      - name: Test invalid version fails gracefully
+        run: |
+          echo "=== Test 9: Invalid version fails gracefully ==="
+          mkdir -p /tmp/test-project-3
+          cd /tmp/test-project-3
+          if sh ${{ github.workspace }}/install.sh v99.99.99 2>/dev/null; then
+            echo "FAIL: should have failed for non-existent version"
+            exit 1
+          fi
+          echo "PASS: invalid version rejected"
 
   pdv:
     needs: deploy

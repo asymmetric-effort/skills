@@ -30,25 +30,36 @@ Without a shared skills repo, every project reinvents the same prompts: "how to 
 
 ### Prerequisites
 
-- Git with submodule support
 - [Claude Code](https://claude.ai/claude-code) CLI, desktop app, or IDE extension
-- SSH access to `github.com:asymmetric-effort` (for private repos)
+- `curl` and `tar` available on the system
 
-### Step 1: Add the Submodule
+### Step 1: Install Skills
 
 From your project's root directory:
 
 ```bash
-git submodule add -b release git@github.com:asymmetric-effort/skills.git .claude/skills
-git commit -m "chore: add shared skills submodule"
-git push
+curl -fsSL https://skills.asymmetric-effort.com/install.sh | sh
 ```
 
-This clones the `release` branch (the published artifact, not the source tree) into `.claude/skills/`.
+Or add a Makefile target for repeatable installs:
+
+```makefile
+SKILLS_VERSION := v0.0.24
+
+install-skills: ## Install Claude Code skills
+	@curl -fsSL https://skills.asymmetric-effort.com/install.sh | sh -s $(SKILLS_VERSION)
+```
+
+Since `.claude/skills/` is now an installed artifact (not checked into source control), add it to your `.gitignore`:
+
+```
+# Installed Claude Code skills
+.claude/skills/
+```
 
 ### Step 2: Verify the Structure
 
-After adding the submodule, you should see:
+After installing, you should see:
 
 ```
 your-project/
@@ -81,34 +92,24 @@ Start or restart Claude Code in your project directory. Type `/` and you should 
 
 If skills don't appear, see [Troubleshooting](#troubleshooting) below.
 
-### Step 4: Initialize Submodule on Clone
+### Step 4: CI Setup
 
-When team members clone your project, they need to initialize the submodule:
+Add the install step to your CI pipeline so skills are available during automated runs:
 
-```bash
-git clone --recurse-submodules git@github.com:asymmetric-effort/your-project.git
-```
-
-Or, if already cloned without submodules:
-
-```bash
-git submodule init
-git submodule update
+```yaml
+- name: Install skills
+  run: curl -fsSL https://skills.asymmetric-effort.com/install.sh | sh -s v0.0.24
 ```
 
 ### Step 5: Keep Skills Updated
 
-To pull the latest skills:
+To update to the latest skills:
 
 ```bash
-cd .claude/skills
-git pull origin release
-cd ../..
-git add .claude/skills
-git commit -m "chore: update skills to latest"
+curl -fsSL https://skills.asymmetric-effort.com/install.sh | sh
+# or with Makefile:
+make install-skills
 ```
-
-Or invoke `/upgrade-skills` from within Claude Code to automate this.
 
 ## Architecture: Two Branches
 
@@ -117,9 +118,9 @@ This repo uses a two-branch publishing model:
 | Branch | Purpose | Contents |
 |--------|---------|----------|
 | `main` | **Authoring** — where skills are written and organized | Nested tree: `<class>/<subclass>/<skill>/SKILL.md` |
-| `release` | **Consumption** — what projects install as a submodule | Flat directories: `<skill-name>/SKILL.md` + `skills.json` index |
+| `release` | **Distribution** — CI publishes GitHub Releases containing tarballs that `install.sh` downloads | `<skill-name>/SKILL.md` directories + `skills.json` index |
 
-A CI pipeline (`publish-skills` job) automatically flattens the source tree and publishes to the `release` branch on every push to `main`. **Consumer projects must always reference the `release` branch**, never `main`.
+A CI pipeline (`publish-skills` job) automatically flattens the source tree, publishes to the `release` branch, and creates a GitHub Release tarball on every push to `main`. **Consumer projects install skills via `install.sh`**, which downloads the appropriate release tarball.
 
 ### How Publishing Works
 
@@ -127,11 +128,12 @@ A CI pipeline (`publish-skills` job) automatically flattens the source tree and 
 2. Push to `main` triggers CI
 3. The `flatten-skills.mjs` script reads all `SKILL.md` files, injects metadata (`source_path`, `class`, `subclass`), and outputs them as `<name>/SKILL.md` directories
 4. CI force-pushes the flattened output to the `release` branch
-5. Consumer projects pull the `release` branch to get the update
+5. A GitHub Release tarball is created for the version
+6. Consumer projects run `install.sh` to download and extract the update
 
 ### Published Skill Format
 
-Each published `SKILL.md` on the `release` branch has additional frontmatter fields injected:
+Each published skill is a `<name>/SKILL.md` directory with additional frontmatter fields injected:
 
 ```yaml
 ---
@@ -212,61 +214,35 @@ A `skills.json` index file is also published listing all skills with their metad
 
 ## Troubleshooting
 
-### Skills don't appear in Claude Code autocomplete
+### Skills not found after install
 
-**Check the submodule is on the `release` branch:**
+**Check `.claude/skills/` exists:**
 ```bash
-cd .claude/skills
-git branch -a
-# Should show: * (HEAD detached at ...) with origin/release
+ls .claude/skills/
+# Should list skill directories like commit/, push-changes/, pentest/, etc.
 ```
 
-If it's on `main`, you have the source tree (nested `SKILL.md` files) instead of the published format (`<name>/SKILL.md` directories). Fix:
+If the directory is missing, re-run the install:
 ```bash
-git submodule deinit -f .claude/skills
-git rm -f .claude/skills
-rm -rf .git/modules/.claude
-git submodule add -b release git@github.com:asymmetric-effort/skills.git .claude/skills
+curl -fsSL https://skills.asymmetric-effort.com/install.sh | sh
 ```
 
-**Check the directory structure is correct:**
-```bash
-ls .claude/skills/push-changes/
-# Should show: SKILL.md
-```
-
-If you see flat `.md` files instead of directories, you have an old version. Update:
-```bash
-cd .claude/skills && git pull origin release && cd ../..
-```
-
-**Check Claude Code is running from the right directory:**
+**Check your working directory:**
 Claude Code discovers skills by walking up from the working directory. If you start Claude Code from a parent directory that doesn't contain `.claude/skills/`, the skills won't be found. Start Claude Code from your project root.
 
-**Restart Claude Code:**
-Skills are discovered on session start. If you added the submodule during an active session, restart Claude Code to trigger discovery.
+### Install script fails
 
-### Submodule not initialized after clone
-
+**Check `curl` and `tar` are available:**
 ```bash
-git submodule init
-git submodule update
+which curl tar
 ```
 
-Or clone with `--recurse-submodules` next time.
+**Check the version exists:**
+If specifying a version, verify the release exists at the [GitHub Releases page](https://github.com/asymmetric-effort/skills/releases).
 
-### Permission denied on submodule clone
+### Restart Claude Code
 
-Ensure you have SSH access to the skills repo:
-```bash
-ssh -T git@github.com
-```
-
-If using HTTPS instead of SSH:
-```bash
-git submodule set-url .claude/skills https://github.com/asymmetric-effort/skills.git
-git submodule update --remote
-```
+Skills are discovered on session start. If you installed skills during an active session, restart Claude Code to trigger discovery.
 
 ## Contributing
 
@@ -300,7 +276,7 @@ git submodule update --remote
    git push origin main --tags
    ```
 
-CI will automatically flatten and publish the skill to the `release` branch. Consumer projects pull the update with `cd .claude/skills && git pull origin release`.
+CI will automatically flatten and publish the skill to the `release` branch and create a GitHub Release tarball. Consumer projects update by re-running `install.sh`.
 
 ### Requesting a Skill
 
@@ -360,7 +336,8 @@ This repo uses semantic versioning with patch-only bumps:
 
 - **v0.0.N** — each new skill or skill update increments the patch version
 - Tags are annotated: `git tag -a v0.0.N -m "v0.0.N"`
-- Consumer projects get updates by pulling the `release` branch
+- Each tag produces a GitHub Release with a downloadable tarball
+- Consumer projects get updates by running `install.sh` (optionally pinning a version)
 - Breaking changes (skill renames, deletions) will bump minor version with a deprecation notice
 
 ## License
