@@ -1,76 +1,60 @@
 ---
 name: upgrade-skills
-description: Bump the skills git submodule to a newer version tag with changelog preview
+description: Upgrade installed Claude Code skills to a newer version via install.sh
 category: devops
-tags: [submodule, versioning, skills, upgrade, git]
+tags: [versioning, skills, upgrade, install]
 ---
 
 # Upgrade Skills
 
 ## Purpose
 
-Bump the shared skills git submodule to a newer version tag. This automates the fetch-compare-checkout-commit cycle that every consumer project must perform when new skills are added or updated. No Claude restart is required — skills are read on demand from disk, not cached at startup.
+Upgrade the installed Claude Code skills to a newer version. This runs the install script to download the target release tarball from GitHub and extract it to `.claude/skills/`. No Claude restart is required — skills are read on demand from disk, not cached at startup.
 
 ## Prompt
 
-Upgrade the skills submodule to a target version. Follow these steps in order:
+Upgrade the installed skills to a target version. Follow these steps in order:
 
-### 1. Detect the Submodule
+### 1. Check Current Installation
 
-- Look for the skills submodule at `.claude/skills/` (default path)
-- If not found, check `.gitmodules` for a submodule pointing to the skills repo
-- If no skills submodule exists, report the error and abort: "No skills submodule found. Add one with: `git submodule add git@github.com:asymmetric-effort/skills.git .claude/skills`"
+- Look for `.claude/skills/VERSION` to determine the currently installed version
+- If `.claude/skills/` doesn't exist, report: "No skills installed. Run: `curl -fsSL https://skills.asymmetric-effort.com/install.sh | sh`"
+- Report the current version
 
-### 2. Check for Local Modifications
-
-- Run `git -C <submodule-path> status --porcelain`
-- If there are uncommitted changes in the submodule, **warn and abort**: "Skills submodule has local modifications. Commit or stash them before upgrading."
-- Also check the parent repo: if the submodule path is dirty in the parent's working tree, warn before proceeding
-
-### 3. Fetch Available Versions
-
-- Run `cd <submodule-path> && git fetch --tags origin`
-- List all semver tags sorted by version: `git tag --sort=v:refname`
-- Identify the currently checked-out version: `git describe --tags --exact-match HEAD 2>/dev/null` (fall back to the commit SHA if not on a tag)
-
-### 4. Handle Invocation Modes
+### 2. Determine Target Version
 
 **`/upgrade-skills --list`**:
+- Query available versions: `curl -fsSL https://api.github.com/repos/asymmetric-effort/skills/releases | jq '.[].tag_name'`
 - Display the current version and all available versions
 - Highlight which is current and which is latest
 - Exit without making changes
 
 **`/upgrade-skills v0.0.N`** (specific version):
-- Verify the requested tag exists
-- If it doesn't exist, show available tags and abort
+- Verify the requested version exists as a GitHub Release
+- If it doesn't exist, show available versions and abort
 - If it matches the current version, report "already on v0.0.N" and exit
 
 **`/upgrade-skills`** (no arguments):
-- Determine the latest semver tag
+- Query the latest release: `curl -fsSL https://api.github.com/repos/asymmetric-effort/skills/releases/latest | jq -r .tag_name`
 - If already on the latest, report "already up to date at v0.0.N" and exit
-- Otherwise, target the latest tag
+- Otherwise, target the latest version
 
-### 5. Show Changelog
+### 3. Show What's New
 
-- List commits between the current version and the target: `git log --oneline <current>...<target>`
-- Summarize what changed: new skills added, skills updated, documentation changes
-- Show the count of commits and affected files
+- Compare the current and target version numbers
+- If possible, fetch the release notes for the target version from the GitHub API
+- Summarize what changed: new skills added, skills updated
 
-### 6. Checkout the Target Version
+### 4. Run the Install Script
 
-- Run `git -C <submodule-path> checkout <target-tag>`
-- Verify the checkout succeeded: `git -C <submodule-path> describe --tags --exact-match HEAD`
+- Execute: `curl -fsSL https://skills.asymmetric-effort.com/install.sh | sh -s <target-version>`
+- The install script removes the existing `.claude/skills/` directory and extracts the new version
+- Verify the new VERSION file matches the target
 
-### 7. Commit the Submodule Pointer Update
-
-- In the parent repo, stage the submodule: `git add <submodule-path>`
-- Commit with message: `chore: bump skills to <target-tag>`
-- Do not push — let the user or `/push-changes` handle that
-
-### 8. Report
+### 5. Report
 
 - Confirm the upgrade: "Skills upgraded from v0.0.X to v0.0.Y"
-- List new or updated skills (derived from the changelog)
+- Report the skill count
 - Remind the user: "No restart needed — new skills are available immediately"
 
 ## Examples
@@ -80,16 +64,13 @@ Upgrade the skills submodule to a target version. Follow these steps in order:
 ```
 > /upgrade-skills --list
 
-Skills Submodule: .claude/skills/
-Current version: v0.0.12
+Current: v0.0.20
 
 Available versions:
-  v0.0.1   v0.0.2   v0.0.3   v0.0.4   v0.0.5
-  v0.0.6   v0.0.7   v0.0.8   v0.0.9   v0.0.10
-  v0.0.11  v0.0.12* v0.0.13  v0.0.14  v0.0.15
-  v0.0.16  v0.0.17
+  v0.0.18  v0.0.19  v0.0.20*  v0.0.21  v0.0.22
+  v0.0.23  v0.0.24  v0.0.25
 
-Latest: v0.0.17
+Latest: v0.0.25
 ```
 
 ### Upgrade to latest
@@ -97,39 +78,26 @@ Latest: v0.0.17
 ```
 > /upgrade-skills
 
-Skills Submodule: .claude/skills/
-Current: v0.0.12 → Target: v0.0.17
+Current: v0.0.20 → Target: v0.0.25
 
-Changelog (5 versions, 8 commits):
-  v0.0.13 — Add check-coverage skill for test coverage analysis
-  v0.0.14 — Add ci-status skill for CI/CD pipeline health check
-  v0.0.15 — Add project-plan, gap-analysis, and pentest skills
-  v0.0.16 — Add CLAUDE.md and comprehensive README
-  v0.0.17 — Add upgrade-skills skill
+Installing v0.0.25...
+  Installed 26 skills (v0.0.25)
 
-✓ Checked out v0.0.17
-✓ Committed: chore: bump skills to v0.0.17
-
-Skills upgraded from v0.0.12 to v0.0.17
+Skills upgraded from v0.0.20 to v0.0.25
 No restart needed — new skills are available immediately.
 ```
 
 ### Upgrade to specific version
 
 ```
-> /upgrade-skills v0.0.14
+> /upgrade-skills v0.0.23
 
-Skills Submodule: .claude/skills/
-Current: v0.0.12 → Target: v0.0.14
+Current: v0.0.20 → Target: v0.0.23
 
-Changelog (2 versions, 2 commits):
-  v0.0.13 — Add check-coverage skill
-  v0.0.14 — Add ci-status skill
+Installing v0.0.23...
+  Installed 26 skills (v0.0.23)
 
-✓ Checked out v0.0.14
-✓ Committed: chore: bump skills to v0.0.14
-
-Skills upgraded from v0.0.12 to v0.0.14
+Skills upgraded from v0.0.20 to v0.0.23
 ```
 
 ### Already up to date
@@ -137,19 +105,5 @@ Skills upgraded from v0.0.12 to v0.0.14
 ```
 > /upgrade-skills
 
-Skills Submodule: .claude/skills/
-Already up to date at v0.0.17.
-```
-
-### Local modifications detected
-
-```
-> /upgrade-skills
-
-Skills Submodule: .claude/skills/
-⚠ Skills submodule has local modifications:
-  M security/pentest/SKILL.md
-  ?? security/custom-skill/
-
-Commit or stash local changes before upgrading. Aborting.
+Already up to date at v0.0.25.
 ```

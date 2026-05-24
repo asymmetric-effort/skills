@@ -7,11 +7,11 @@ This is a centralized library of reusable Claude Code skills for the Asymmetric 
 ## Two-Branch Architecture
 
 - **`main`** — source of truth. Skills live at `<class>/<subclass>/<skill>/SKILL.md`. This is where authoring, reviewing, and organizing happens.
-- **`release`** — published artifact. CI flattens all skills to `<name>.md` files and publishes them here. Consumer projects add this branch as a git submodule at `.claude/skills/`.
+- **`release`** — published artifact. CI flattens all skills to `<name>/SKILL.md` directories, publishes to this branch, and creates a GitHub Release tarball.
 
-**Consumer projects should never reference `main` directly.** Always use:
+**Consumer projects install skills via the install script:**
 ```bash
-git submodule add -b release git@github.com:asymmetric-effort/skills.git .claude/skills
+curl -fsSL https://skills.asymmetric-effort.com/install.sh | sh
 ```
 
 ## Repository Structure
@@ -63,7 +63,7 @@ CI will automatically:
 - Every skill addition or modification gets a new semver patch tag (v0.0.N)
 - Tags must be annotated: `git tag -a v0.0.N -m "v0.0.N"`
 - Always push tags: `git push origin main --tags`
-- Consumer projects get updates by pulling the `release` branch of their submodule
+- Consumer projects get updates by re-running `install.sh`
 
 ## Commit Messages
 

@@ -185,7 +185,7 @@ A `skills.json` index file is also published listing all skills with their metad
 | blue-green-deploy | `/blue-green-deploy` | Staged deployment with PDV gates, promotion, and rollback |
 | ci-status | `/ci-status` | CI/CD pipeline health check with failure classification |
 | push-changes | `/push-changes` | Full commit-bump-tag-push cycle with CI monitoring |
-| upgrade-skills | `/upgrade-skills` | Bump the skills submodule to a newer version |
+| upgrade-skills | `/upgrade-skills` | Upgrade installed skills to a newer version |
 
 ### Jokes
 
