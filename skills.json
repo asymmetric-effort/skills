@@ -1,0 +1,416 @@
+[
+  {
+    "name": "audit-deps",
+    "description": "Deep supply chain audit with transitive dependency mapping, risk assessment, and license compatibility checks",
+    "category": "security/auditing",
+    "tags": [
+      "security",
+      "dependencies",
+      "supply-chain",
+      "audit",
+      "licenses",
+      "risk-assessment"
+    ],
+    "source_path": "security/auditing/audit-deps",
+    "class": "security",
+    "subclass": "auditing"
+  },
+  {
+    "name": "blue-green-deploy",
+    "description": "Staged deployment with PDV gates, promotion, and automatic rollback",
+    "category": "devops",
+    "tags": [
+      "deployment",
+      "blue-green",
+      "staging",
+      "pdv",
+      "rollback",
+      "github-pages",
+      "ci-cd"
+    ],
+    "source_path": "devops/deployment/blue-green-deploy",
+    "class": "devops",
+    "subclass": "deployment"
+  },
+  {
+    "name": "check-coverage",
+    "description": "Test coverage analysis with gap identification, threshold enforcement, and regression detection",
+    "category": "testing/test-strategy",
+    "tags": [
+      "testing",
+      "coverage",
+      "quality",
+      "test-strategy",
+      "regression",
+      "thresholds"
+    ],
+    "source_path": "testing/test-strategy/check-coverage",
+    "class": "testing",
+    "subclass": "test-strategy"
+  },
+  {
+    "name": "ci-status",
+    "description": "CI/CD pipeline health check with failure classification, log analysis, and multi-branch status view",
+    "category": "devops/ci-cd",
+    "tags": [
+      "ci-cd",
+      "github-actions",
+      "debugging",
+      "pipeline",
+      "devops",
+      "monitoring"
+    ],
+    "source_path": "devops/ci-cd/ci-status",
+    "class": "devops",
+    "subclass": "ci-cd"
+  },
+  {
+    "name": "code-humor",
+    "description": "Generate programming jokes, tech comedy, and developer in-jokes",
+    "category": "jokes",
+    "tags": [
+      "humor",
+      "programming",
+      "tech",
+      "developer"
+    ],
+    "source_path": "jokes/code-humor",
+    "class": "jokes",
+    "subclass": "code-humor"
+  },
+  {
+    "name": "commit",
+    "description": "Analyze changes and create well-structured conventional git commits with co-authorship",
+    "category": "development",
+    "tags": [
+      "git",
+      "commit",
+      "conventional-commits",
+      "workflow",
+      "version-control"
+    ],
+    "source_path": "development/commit",
+    "class": "development",
+    "subclass": "commit"
+  },
+  {
+    "name": "easter-eggs",
+    "description": "Design hidden features, surprise interactions, and delightful secrets",
+    "category": "jokes",
+    "tags": [
+      "humor",
+      "easter-eggs",
+      "surprises",
+      "delight"
+    ],
+    "source_path": "jokes/easter-eggs",
+    "class": "jokes",
+    "subclass": "easter-eggs"
+  },
+  {
+    "name": "epitaphs",
+    "description": "Generate witty, darkly humorous epitaphs and tombstone inscriptions",
+    "category": "jokes",
+    "tags": [
+      "humor",
+      "dark-comedy",
+      "epitaphs",
+      "writing"
+    ],
+    "source_path": "jokes/epitaphs",
+    "class": "jokes",
+    "subclass": "epitaphs"
+  },
+  {
+    "name": "file-bug",
+    "description": "Generate structured upstream bug reports with reproduction steps, duplicate detection, and filing via gh",
+    "category": "development/debugging",
+    "tags": [
+      "bugs",
+      "debugging",
+      "github",
+      "issue-filing",
+      "upstream",
+      "reproduction"
+    ],
+    "source_path": "development/debugging/file-bug",
+    "class": "development",
+    "subclass": "debugging"
+  },
+  {
+    "name": "gap-analysis",
+    "description": "Compare two software projects and produce a GapAnalysis.md detailing what is needed for 100% feature compatibility and parity",
+    "category": "development",
+    "tags": [
+      "analysis",
+      "comparison",
+      "feature-parity",
+      "migration",
+      "compatibility"
+    ],
+    "source_path": "development/gap-analysis",
+    "class": "development",
+    "subclass": "gap-analysis"
+  },
+  {
+    "name": "gh-auth",
+    "description": "Authenticate the GitHub CLI (gh) using device/OIDC flow for interactive sessions or token for CI",
+    "category": "devops/ci-cd",
+    "tags": [
+      "github",
+      "authentication",
+      "gh-cli",
+      "oidc",
+      "device-flow",
+      "ci-cd"
+    ],
+    "source_path": "devops/ci-cd/gh-auth",
+    "class": "devops",
+    "subclass": "ci-cd"
+  },
+  {
+    "name": "loop",
+    "description": "Execute prompts or commands on a recurring interval with support for fixed, dynamic, and event-driven scheduling",
+    "category": "automation/scheduling",
+    "tags": [
+      "scheduling",
+      "recurring",
+      "interval",
+      "cron",
+      "monitoring",
+      "automation"
+    ],
+    "source_path": "automation/scheduling/loop",
+    "class": "automation",
+    "subclass": "scheduling"
+  },
+  {
+    "name": "monitor-issues",
+    "description": "Monitor repo GitHub issues from trusted sources, categorize, prioritize, and produce structured reports",
+    "category": "automation/workflows",
+    "tags": [
+      "github",
+      "issues",
+      "monitoring",
+      "triage",
+      "automation",
+      "cron"
+    ],
+    "source_path": "automation/workflows/monitor-issues",
+    "class": "automation",
+    "subclass": "workflows"
+  },
+  {
+    "name": "monitor-upstream",
+    "description": "Track external dependency releases and upstream issue status with automated verification",
+    "category": "automation/integrations",
+    "tags": [
+      "dependencies",
+      "monitoring",
+      "npm",
+      "github-releases",
+      "upstream",
+      "integrations"
+    ],
+    "source_path": "automation/integrations/monitor-upstream",
+    "class": "automation",
+    "subclass": "integrations"
+  },
+  {
+    "name": "one-liners",
+    "description": "Generate quick, punchy single-line jokes",
+    "category": "jokes",
+    "tags": [
+      "humor",
+      "one-liners",
+      "quick-wit",
+      "comedy"
+    ],
+    "source_path": "jokes/one-liners",
+    "class": "jokes",
+    "subclass": "one-liners"
+  },
+  {
+    "name": "pdf",
+    "description": "Read, parse, and analyze PDF documents with page-range support and structured extraction",
+    "category": "data/processing",
+    "tags": [
+      "pdf",
+      "document-processing",
+      "parsing",
+      "extraction",
+      "analysis"
+    ],
+    "source_path": "data/processing/pdf",
+    "class": "data",
+    "subclass": "processing"
+  },
+  {
+    "name": "pdv",
+    "description": "Playwright-based post-deployment verification against live staging and production URLs",
+    "category": "testing/e2e",
+    "tags": [
+      "playwright",
+      "post-deployment",
+      "verification",
+      "e2e",
+      "ci-cd",
+      "smoke-testing"
+    ],
+    "source_path": "testing/e2e/pdv",
+    "class": "testing",
+    "subclass": "e2e"
+  },
+  {
+    "name": "pentest",
+    "description": "Perform an exhaustive security-focused code review identifying vulnerabilities, attack surfaces, and providing remediation guidance",
+    "category": "security",
+    "tags": [
+      "security",
+      "penetration-testing",
+      "code-review",
+      "vulnerabilities",
+      "OWASP"
+    ],
+    "source_path": "security/pentest",
+    "class": "security",
+    "subclass": "pentest"
+  },
+  {
+    "name": "project-plan",
+    "description": "Consume a plan file and generate GitHub issues for a repository",
+    "category": "development",
+    "tags": [
+      "project-management",
+      "github",
+      "issues",
+      "planning",
+      "automation"
+    ],
+    "source_path": "development/project-plan",
+    "class": "development",
+    "subclass": "project-plan"
+  },
+  {
+    "name": "puns",
+    "description": "Generate wordplay, double meanings, and groan-worthy puns",
+    "category": "jokes",
+    "tags": [
+      "humor",
+      "puns",
+      "wordplay",
+      "language"
+    ],
+    "source_path": "jokes/puns",
+    "class": "jokes",
+    "subclass": "puns"
+  },
+  {
+    "name": "push-changes",
+    "description": "Full commit-bump-tag-push cycle with conventional commits, version bumping, and CI/CD monitoring",
+    "category": "devops/deployment",
+    "tags": [
+      "git",
+      "deployment",
+      "versioning",
+      "conventional-commits",
+      "ci-cd",
+      "tagging"
+    ],
+    "source_path": "devops/deployment/push-changes",
+    "class": "devops",
+    "subclass": "deployment"
+  },
+  {
+    "name": "resolve-issues",
+    "description": "Automate resolving GitHub issues end-to-end using TDD, git worktrees, PRs, and automated releases",
+    "category": "automation/workflows",
+    "tags": [
+      "automation",
+      "github",
+      "tdd",
+      "worktrees",
+      "ci-cd",
+      "pull-requests",
+      "releases"
+    ],
+    "source_path": "automation/workflows/resolve-issues",
+    "class": "automation",
+    "subclass": "workflows"
+  },
+  {
+    "name": "review-pr",
+    "description": "Perform structured code reviews on GitHub pull requests with actionable feedback",
+    "category": "development",
+    "tags": [
+      "code-review",
+      "pull-requests",
+      "github",
+      "quality",
+      "security"
+    ],
+    "source_path": "development/review-pr",
+    "class": "development",
+    "subclass": "review-pr"
+  },
+  {
+    "name": "schedule",
+    "description": "Create and manage cloud-scheduled remote agents via the RemoteTrigger API",
+    "category": "automation/scheduling",
+    "tags": [
+      "scheduling",
+      "remote-agents",
+      "cron",
+      "cloud",
+      "triggers",
+      "mcp"
+    ],
+    "source_path": "automation/scheduling/schedule",
+    "class": "automation",
+    "subclass": "scheduling"
+  },
+  {
+    "name": "scheduling",
+    "description": "Set up scheduled and recurring tasks using cron, systemd timers, and cloud schedulers",
+    "category": "automation",
+    "tags": [
+      "scheduling",
+      "cron",
+      "timers",
+      "automation",
+      "recurring-tasks"
+    ],
+    "source_path": "automation/scheduling",
+    "class": "automation",
+    "subclass": "scheduling"
+  },
+  {
+    "name": "storytelling",
+    "description": "Craft humorous narratives, shaggy dog stories, and comedic scenarios",
+    "category": "jokes",
+    "tags": [
+      "humor",
+      "storytelling",
+      "narrative",
+      "comedy",
+      "long-form"
+    ],
+    "source_path": "jokes/storytelling",
+    "class": "jokes",
+    "subclass": "storytelling"
+  },
+  {
+    "name": "upgrade-skills",
+    "description": "Upgrade installed Claude Code skills to a newer version via install.sh",
+    "category": "devops",
+    "tags": [
+      "versioning",
+      "skills",
+      "upgrade",
+      "install"
+    ],
+    "source_path": "devops/deployment/upgrade-skills",
+    "class": "devops",
+    "subclass": "deployment"
+  }
+]
