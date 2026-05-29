@@ -247,7 +247,7 @@ jobs:
           SITE_URL: https://skills.asymmetric-effort.com
       - name: Upload test report on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pdv-report
           path: site/e2e-pdv/test-results/
